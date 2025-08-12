@@ -1,3 +1,5 @@
+import OAuthCallback from "./OAuthCallback";
+
 import Layout from "./Layout.jsx";
 
 import Dashboard from "./Dashboard";
@@ -58,6 +60,8 @@ function PagesContent() {
         <Route path="/AIChat" element={<AIChat />} />
         <Route path="/Landing" element={<Landing />} />
         <Route path="/Pricing" element={<Pricing />} />
+        <Route path="/auth/callback" element={<OAuthCallback />} />
+
       </Routes>
     </Layout>
   );
