@@ -87,12 +87,16 @@ const navigationItems = [
 ];
 
 export default function Layout({ children, currentPageName }) {
-  // If the current page is the Landing page, render it without the main app layout.
-  if (currentPageName === 'Landing') {
+  const location = useLocation();
+
+  // More robust check: Hide sidebar for Landing page regardless of currentPageName
+  const isLandingPage = currentPageName === 'Landing' ||
+                       location.pathname === '/' ||
+                       location.pathname === '/Landing';
+
+  if (isLandingPage) {
     return <>{children}</>;
   }
-
-  const location = useLocation();
   const [user, setUser] = React.useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
   const [isDeleting, setIsDeleting] = React.useState(false);
