@@ -381,7 +381,7 @@ export default function Landing() {
   }}
                      >
                       {plan.buttonText}
-                    </Button>
+                    </button>
                   </CardContent>
                 </Card>
               </motion.div>
