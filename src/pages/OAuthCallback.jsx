@@ -34,7 +34,7 @@ export default function OAuthCallback() {
 
         // 4) Go to dashboard (lowercase path)
         setMsg("All set! Redirecting to your dashboard…");
-        setTimeout(() => navigate("/dashboard", { replace: true }), 400);
+        setTimeout(() => navigate("/Dashboard", { replace: true }), 400);
       } catch (e) {
         console.error("OAuth error:", e);
         setMsg("Sign-in failed. Sending you to login…");
