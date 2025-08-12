@@ -1,3 +1,4 @@
+import { supabase } from "@/lib/supabaseClient";
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,9 @@ import {
 export default function Landing() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+    const [showAuthOptions, setShowAuthOptions] = useState(false);
+
 
   useEffect(() => {
     const checkUser = async () => {
@@ -230,10 +234,9 @@ export default function Landing() {
     }
   ];
 
-  const handleLogin = async () => {
-    const callbackUrl = window.location.origin + '/Dashboard';
-    await User.loginWithRedirect(callbackUrl);
-  };
+ const handleLogin = () => {
+  setShowAuthOptions(true);
+};
 
   const scrollToSection = (id) => {
     const section = document.getElementById(id);
@@ -242,6 +245,19 @@ export default function Landing() {
     }
   };
 
+   async function loginWithGoogle() {
+  await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: `${window.location.origin}/auth/callback` }
+  });
+}
+
+async function loginWithMicrosoft() {
+  await supabase.auth.signInWithOAuth({
+    provider: "azure", // Microsoft via Azure/Entra
+    options: { redirectTo: `${window.location.origin}/auth/callback` }
+  });
+}
   if (isLoading) {
     // Show loading state while checking authentication
     return (
@@ -383,6 +399,33 @@ export default function Landing() {
                 </button>
               </motion.div>
             </div>
+
+            {showAuthOptions && (
+  <div className="mx-auto mb-16 max-w-md w-full bg-white/90 backdrop-blur border border-orange-200 rounded-xl p-6 shadow-xl">
+    <h3 className="text-xl font-semibold mb-3 text-gray-800">Continue with</h3>
+    <div className="space-y-3">
+      <Button
+        onClick={loginWithGoogle}
+        className="w-full bg-gray-900 hover:bg-black"
+      >
+        Continue with Google
+      </Button>
+      <Button
+        onClick={loginWithMicrosoft}
+        className="w-full bg-gray-800 hover:bg-gray-900"
+      >
+        Continue with Microsoft
+      </Button>
+    </div>
+    <button
+      onClick={() => setShowAuthOptions(false)}
+      className="mt-4 text-sm text-gray-500 hover:text-gray-700 underline"
+    >
+      Cancel
+    </button>
+  </div>
+)}
+
 
             {/* Use Cases */}
             <div className="grid md:grid-cols-3 gap-8 mt-20">
