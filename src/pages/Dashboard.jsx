@@ -47,9 +47,56 @@ export default function Dashboard() {
   const [storageUsed, setStorageUsed] = useState(0); // State for storage usage
   const [isSyncingFileSizes, setIsSyncingFileSizes] = useState(false); // New state for sync status
 
-  useEffect(() => {
+  
+  const [orgId, setOrgId] = useState(null);
+const [role, setRole] = useState(null);
+const isAdmin = role === "admin";
+const navigate = useNavigate();
+
+useEffect(() => {
+  const checkAuthAndLoad = async () => {
+    // 1) must be logged in
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      navigate("/auth");
+      return;
+    }
+
+    // 2) store user (for your existing UI)
+    const user = session.user;
+    setUser(user);
+
+    // 3) try localStorage first (set during /auth/callback)
+    let savedOrg = localStorage.getItem("orgId");
+    let savedRole = localStorage.getItem("userRole");
+
+    // 4) if missing, fetch from memberships once
+    if (!savedOrg || !savedRole) {
+      const { data, error } = await supabase
+        .from("memberships")
+        .select("organization_id, role")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true })
+        .limit(1);
+
+      if (!error && data?.length) {
+        savedOrg = data[0].organization_id;
+        savedRole = data[0].role;
+        localStorage.setItem("orgId", savedOrg);
+        localStorage.setItem("userRole", savedRole);
+      }
+    }
+
+    // 5) commit to state
+    setOrgId(savedOrg || null);
+    setRole(savedRole || null);
+
+    // 6) load your existing dashboard data
     loadData();
-  }, []);
+  };
+
+  checkAuthAndLoad();
+}, [navigate]);
 
   const loadData = async () => {
     setIsLoading(true);
