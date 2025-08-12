@@ -1,3 +1,5 @@
+import AuthPage from "./AuthPage";
+
 import OAuthCallback from "./OAuthCallback";
 
 import Layout from "./Layout.jsx";
@@ -50,6 +52,7 @@ function PagesContent() {
       <Routes>
         {/* Landing is now the default page */}
         <Route path="/" element={<Landing />} />
+<Route path="/auth" element={<AuthPage />} />
 
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/Search" element={<Search />} />
