@@ -330,19 +330,32 @@ export default function Landing() {
           </motion.div>
         </div>
       </section>
-
-      {/* Pricing Section */}
+      
+ {/* Pricing Section */}
       <section id="pricing" className="py-20 lg:py-32 bg-gradient-to-br from-orange-25 to-orange-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <motion.div {...fadeInUp} className="text-center mb-16">
-            <h2 className="text-3xl lg:text-5xl font-bold text-gray-800 mb-6">Pricing Plans for Every Lab</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">Choose the plan that fits your team's needs. All plans come with our core AI features and no limits on members.</p>
+            <h2 className="text-3xl lg:text-5xl font-bold text-gray-800 mb-6">
+              Pricing Plans for Every Lab
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Choose the plan that fits your team's needs. All plans come with our core AI features and no limits on members.
+            </p>
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {pricingPlans.map((plan, index) => (
-              <motion.div key={index} variants={fadeInUp} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.3 }} whileHover={{ y: -10 }}>
+              <motion.div
+                key={index}
+                variants={fadeInUp}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true, amount: 0.3 }}
+                whileHover={{ y: -10 }}
+              >
                 <Card className={`h-full flex flex-col ${plan.isMostPopular ? 'border-2 border-orange-500 shadow-2xl' : 'border-gray-200 shadow-lg'} bg-white`}>
-                  {plan.isMostPopular && (<div className="bg-orange-500 text-white text-xs font-bold uppercase tracking-wider text-center py-1 rounded-t-lg">Most Popular</div>)}
+                  {plan.isMostPopular && (
+                    <div className="bg-orange-500 text-white text-xs font-bold uppercase tracking-wider text-center py-1 rounded-t-lg">Most Popular</div>
+                  )}
                   <CardContent className="p-8 flex flex-col flex-grow">
                     <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
                     <p className="text-4xl font-bold mb-4">{plan.price}<span className="text-sm font-normal text-gray-500">/month</span></p>
@@ -365,7 +378,7 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
+      
       {/* FAQ Section */}
       <section id="faq" className="py-20 lg:py-32 bg-white">
         <div className="max-w-4xl mx-auto px-6 lg:px-8">
