@@ -61,6 +61,7 @@ function PagesContent() {
 <Route path="/auth" element={<AuthPage />} />
 
         <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/Search" element={<Search />} />
         <Route path="/Upload" element={<Upload />} />
         <Route path="/Projects" element={<Projects />} />
