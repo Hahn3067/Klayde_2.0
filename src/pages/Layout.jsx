@@ -49,7 +49,6 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 // Correctly import the User entity
-import { User } from '@/entities/User';
 import { deleteAllCompanyData } from '@/functions/deleteAllCompanyData';
 
 
