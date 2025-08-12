@@ -12,13 +12,13 @@ export default function OAuthCallback() {
 
     (async () => {
       try {
-        // (A) IMPORTANT: exchange the code in the URL for a Supabase session
+        // 1) Turn Google's code in the URL into a Supabase session
         setMsg("Completing secure sign-in…");
         await supabase.auth.exchangeCodeForSession();
 
         if (!mounted) return;
 
-        // (B) Confirm session is really there (extra safety)
+        // 2) Double-check we have a session
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
           setMsg("No session found. Redirecting to sign-in…");
@@ -26,16 +26,13 @@ export default function OAuthCallback() {
           return;
         }
 
-        // (C) Load org/role (okay if it’s not ready yet)
+        // 3) (Optional) Load org/role; ok if not ready yet
         setMsg("Setting up your workspace…");
         const tenant = await loadTenantForCurrentUser().catch(() => null);
         if (!mounted) return;
+        if (tenant) saveTenantToStorage(tenant);
 
-        if (tenant) {
-          saveTenantToStorage(tenant);
-        }
-
-        // (D) Go to your dashboard (lowercase path)
+        // 4) Go to dashboard (lowercase path)
         setMsg("All set! Redirecting to your dashboard…");
         setTimeout(() => navigate("/dashboard", { replace: true }), 400);
       } catch (e) {
