@@ -1,3 +1,5 @@
+console.log("SUPABASE URL IN APP:", import.meta.env.VITE_SUPABASE_URL);
+
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Beaker } from "lucide-react";
