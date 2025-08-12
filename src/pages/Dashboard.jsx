@@ -58,7 +58,7 @@ useEffect(() => {
     // 1) must be logged in
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-      navigate("/auth");
+      navigate("/login");
       return;
     }
 
