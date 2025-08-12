@@ -1,6 +1,12 @@
+// src/pages/index.jsx
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+
+import Layout from "./Layout.jsx";
+import Landing from "./Landing";
+import Pricing from "./Pricing";
 import AuthPage from "./AuthPage";
 import OAuthCallback from "./OAuthCallback";
-import Layout from "./Layout.jsx";
 
 import Dashboard from "./Dashboard";
 import Search from "./Search";
@@ -9,39 +15,30 @@ import Projects from "./Projects";
 import Knowledgebase from "./Knowledgebase";
 import TeamManagement from "./TeamManagement";
 import AIChat from "./AIChat";
-import Landing from "./Landing";
-import Pricing from "./Pricing";
 
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
-
-const PAGES = {
-  Dashboard,
-  Search,
-  Upload,
-  Projects,
-  Knowledgebase,
-  TeamManagement,
-  AIChat,
-  Landing,
-  Pricing,
-};
-
-function _getCurrentPage(url) {
-  if (url.endsWith("/")) url = url.slice(0, -1);
-  let urlLastPart = url.split("/").pop() || "";
-  if (urlLastPart.includes("?")) urlLastPart = urlLastPart.split("?")[0];
-
-  if (urlLastPart === "") return "Landing";
-
-  const pageName = Object.keys(PAGES).find(
-    (page) => page.toLowerCase() === urlLastPart.toLowerCase()
-  );
-  return pageName || "Dashboard";
+// Helper to keep your header highlighting working
+function getCurrentPage(pathname) {
+  const last = (pathname.split("/").filter(Boolean).pop() || "").toLowerCase();
+  if (!last) return "Landing";
+  const pages = [
+    "dashboard",
+    "search",
+    "upload",
+    "projects",
+    "knowledgebase",
+    "teammanagement",
+    "aichat",
+    "landing",
+    "pricing",
+  ];
+  const match = pages.find((p) => p === last);
+  // default to Dashboard if unknown
+  return match ? match.charAt(0).toUpperCase() + match.slice(1) : "Dashboard";
 }
 
 function PagesContent() {
   const location = useLocation();
-  const currentPage = _getCurrentPage(location.pathname);
+  const currentPage = getCurrentPage(location.pathname);
 
   return (
     <Layout currentPageName={currentPage}>
@@ -51,10 +48,10 @@ function PagesContent() {
         <Route path="/Landing" element={<Landing />} />
         <Route path="/Pricing" element={<Pricing />} />
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/login" element={<AuthPage />} /> {/* alias for buttons that point to /login */}
+        <Route path="/login" element={<AuthPage />} /> {/* alias */}
         <Route path="/auth/callback" element={<OAuthCallback />} />
 
-        {/* Dashboard & app routes (support both cases just in case) */}
+        {/* App routes (support both cases just in case) */}
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/dashboard" element={<Dashboard />} />
 
@@ -65,8 +62,8 @@ function PagesContent() {
         <Route path="/TeamManagement" element={<TeamManagement />} />
         <Route path="/AIChat" element={<AIChat />} />
 
-        {/* TEMP: catch-all so we never get a blank screen */}
-       
+        {/* Fallback: send unknown paths to Landing to avoid blank screen */}
+        <Route path="*" element={<Landing />} />
       </Routes>
     </Layout>
   );
