@@ -1,0 +1,7 @@
+export const User = {
+  me: async () => null,  // no user logged in
+  loginWithRedirect: async (url) => {
+    // mock login redirect
+    window.location.href = url;
+  }
+};
