@@ -56,11 +56,11 @@ const navigate = useNavigate();
 useEffect(() => {
   const checkAuthAndLoad = async () => {
     // 1) must be logged in
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      navigate("/login");
-      return;
-    }
+   const { data: { session } } = await supabase.auth.getSession();
+if (!session) {
+  navigate("/auth"); // <-- your actual login route
+  return;
+}
 
     // 2) store user (for your existing UI)
     const user = session.user;
