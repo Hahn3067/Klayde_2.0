@@ -28,11 +28,17 @@ const PAGES = {
   Pricing: Pricing,
 };
 
-function _getCurrentPage(url) {
+ffunction _getCurrentPage(url) {
   if (url.endsWith("/")) {
     url = url.slice(0, -1);
   }
   let urlLastPart = url.split("/").pop();
+
+  // Handle the root path explicitly
+  if (urlLastPart === "") {
+    return "Landing"; // This is correct, as / maps to Landing
+  }
+
   if (urlLastPart.includes("?")) {
     urlLastPart = urlLastPart.split("?")[0];
   }
@@ -40,9 +46,9 @@ function _getCurrentPage(url) {
   const pageName = Object.keys(PAGES).find(
     (page) => page.toLowerCase() === urlLastPart.toLowerCase()
   );
-  return pageName || Object.keys(PAGES)[0];
+  // Default to 'Dashboard' if no match found (or whatever your desired default is)
+  return pageName || "Dashboard"; 
 }
-
 function PagesContent() {
   const location = useLocation();
   const currentPage = _getCurrentPage(location.pathname);
