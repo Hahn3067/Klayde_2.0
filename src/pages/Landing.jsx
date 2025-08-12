@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { createPageUrl } from '@/utils';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";   // ✅ add useNavigate
 import {
   Accordion,
   AccordionContent,
@@ -33,36 +33,33 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-
 export default function Landing() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-    const [showAuthOptions, setShowAuthOptions] = useState(false);
-
+  const navigate = useNavigate();                       // ✅ create navigator
 
   useEffect(() => {
-  let mounted = true;
+    let mounted = true;
 
-  (async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!mounted) return;
-    setUser(session?.user ?? null);
-    setIsLoading(false);
-  })();
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!mounted) return;
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    })();
 
-  // stay in sync with login/logout events
-  const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-    if (!mounted) return;
-    setUser(session?.user ?? null);
-  });
+    // stay in sync with login/logout events
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
+      setUser(session?.user ?? null);
+    });
 
-  return () => {
-    mounted = false;
-    sub.subscription?.unsubscribe?.();
-  };
-}, []);
-
+    return () => {
+      mounted = false;
+      sub.subscription?.unsubscribe?.();
+    };
+  }, []);
 
   const fadeInUp = {
     initial: { opacity: 0, y: 30 },
@@ -79,195 +76,53 @@ export default function Landing() {
   };
 
   const features = [
-    {
-      icon: Upload,
-      title: "Smart Document Upload",
-      description: "Upload PDFs, images, and text files. Our AI automatically extracts text, generates summaries, and creates searchable metadata.",
-      color: "bg-blue-500"
-    },
-    {
-      icon: Search,
-      title: "AI-Powered Search",
-      description: "Ask questions in natural language. Find documents based on meaning, not just keywords. Get instant answers from your knowledge base.",
-      color: "bg-purple-500"
-    },
-    {
-      icon: MessageSquare,
-      title: "Conversational AI Chat",
-      description: "Chat with your documents like talking to a research assistant. Get detailed answers with source citations from your uploaded files.",
-      color: "bg-green-500"
-    },
-    {
-      icon: Users,
-      title: "Team Collaboration",
-      description: "Organize research into projects. Control access with team member permissions. Share knowledge seamlessly across your lab.",
-      color: "bg-orange-500"
-    },
-    {
-      icon: Shield,
-      title: "Selective AI Processing",
-      description: "You control which documents get AI processing. Keep sensitive data as storage-only while making non-confidential research searchable and discoverable.",
-      color: "bg-red-500"
-    },
-    {
-      icon: Zap,
-      title: "Lightning Fast",
-      description: "Instant search results across thousands of documents. Real-time AI processing. Find what you need in seconds, not hours.",
-      color: "bg-yellow-500"
-    }
+    { icon: Upload, title: "Smart Document Upload", description: "Upload PDFs, images, and text files. Our AI automatically extracts text, generates summaries, and creates searchable metadata.", color: "bg-blue-500" },
+    { icon: Search, title: "AI-Powered Search", description: "Ask questions in natural language. Find documents based on meaning, not just keywords. Get instant answers from your knowledge base.", color: "bg-purple-500" },
+    { icon: MessageSquare, title: "Conversational AI Chat", description: "Chat with your documents like talking to a research assistant. Get detailed answers with source citations from your uploaded files.", color: "bg-green-500" },
+    { icon: Users, title: "Team Collaboration", description: "Organize research into projects. Control access with team member permissions. Share knowledge seamlessly across your lab.", color: "bg-orange-500" },
+    { icon: Shield, title: "Selective AI Processing", description: "You control which documents get AI processing. Keep sensitive data as storage-only while making non-confidential research searchable and discoverable.", color: "bg-red-500" },
+    { icon: Zap, title: "Lightning Fast", description: "Instant search results across thousands of documents. Real-time AI processing. Find what you need in seconds, not hours.", color: "bg-yellow-500" }
   ];
 
   const howItWorks = [
-    {
-      step: "1",
-      title: "Upload Your Documents",
-      description: "Drag and drop research papers, protocols, meeting notes, and any other documents into Klayde.",
-      icon: Upload
-    },
-    {
-      step: "2",
-      title: "AI Processes Everything",
-      description: "Our AI automatically extracts text, generates summaries, identifies key concepts, and creates searchable embeddings.",
-      icon: BrainCircuit
-    },
-    {
-      step: "3",
-      title: "Search & Discover",
-      description: "Ask questions, search by meaning, chat with your documents, and get instant insights from your knowledge base.",
-      icon: Search
-    }
+    { step: "1", title: "Upload Your Documents", description: "Drag and drop research papers, protocols, meeting notes, and any other documents into Klayde.", icon: Upload },
+    { step: "2", title: "AI Processes Everything", description: "Our AI automatically extracts text, generates summaries, identifies key concepts, and creates searchable embeddings.", icon: BrainCircuit },
+    { step: "3", title: "Search & Discover", description: "Ask questions, search by meaning, chat with your documents, and get instant insights from your knowledge base.", icon: Search }
   ];
 
   const useCases = [
-    {
-      icon: "📄",
-      title: "Find Lost Papers",
-      description: "\"I read a study about X, but can't remember the author or title\" - Just ask Klayde and it'll find it instantly."
-    },
-    {
-      icon: "🧪",
-      title: "Preserve Lab Knowledge",
-      description: "When team members leave, their protocols and insights stay. No more losing years of experimental knowledge."
-    },
-    {
-      icon: "💡",
-      title: "Instant Research Answers",
-      description: "Get immediate answers from your lab's collective papers, notes, and protocols without digging through folders."
-    }
+    { icon: "📄", title: "Find Lost Papers", description: "\"I read a study about X, but can't remember the author or title\" - Just ask Klayde and it'll find it instantly." },
+    { icon: "🧪", title: "Preserve Lab Knowledge", description: "When team members leave, their protocols and insights stay. No more losing years of experimental knowledge." },
+    { icon: "💡", title: "Instant Research Answers", description: "Get immediate answers from your lab's collective papers, notes, and protocols without digging through folders." }
   ];
 
   const pricingPlans = [
-    {
-      name: "Free",
-      price: "$0",
-      description: "For small labs and personal projects getting started.",
-      features: [
-        "1 GB Storage",
-        "10,000 AI Tokens/month",
-        "<strong>Unlimited Members</strong>",
-        "AI-Powered Search",
-        "Document Upload (PDF, TXT, etc.)"
-      ],
-      isMostPopular: false,
-      buttonText: "Get Started Free"
-    },
-    {
-      name: "Starter",
-      price: "$19",
-      description: "For growing labs that need more capacity.",
-      features: [
-        "10 GB Storage",
-        "100,000 AI Tokens/month",
-        "<strong>Unlimited Members</strong>",
-        "Priority AI Processing",
-        "Team Projects"
-      ],
-      isMostPopular: true,
-      buttonText: "Choose Starter"
-    },
-    {
-      name: "Intermediate",
-      price: "$49",
-      description: "For established labs with large knowledge bases.",
-      features: [
-        "30 GB Storage",
-        "500,000 AI Tokens/month",
-        "<strong>Unlimited Members</strong>",
-        "Advanced Analytics",
-        "Dedicated Support"
-      ],
-      isMostPopular: false,
-      buttonText: "Choose Intermediate"
-    },
-    {
-      name: "Pro",
-      price: "$99",
-      description: "For large organizations with extensive needs.",
-      features: [
-        "100 GB Storage",
-        "2,000,000 AI Tokens/month",
-        "<strong>Unlimited Members</strong>",
-        "API Access",
-        "$1/GB for extra storage"
-      ],
-      isMostPopular: false,
-      buttonText: "Contact Us"
-    }
+    { name: "Free", price: "$0", description: "For small labs and personal projects getting started.", features: ["1 GB Storage","10,000 AI Tokens/month","<strong>Unlimited Members</strong>","AI-Powered Search","Document Upload (PDF, TXT, etc.)"], isMostPopular: false, buttonText: "Get Started Free" },
+    { name: "Starter", price: "$19", description: "For growing labs that need more capacity.", features: ["10 GB Storage","100,000 AI Tokens/month","<strong>Unlimited Members</strong>","Priority AI Processing","Team Projects"], isMostPopular: true, buttonText: "Choose Starter" },
+    { name: "Intermediate", price: "$49", description: "For established labs with large knowledge bases.", features: ["30 GB Storage","500,000 AI Tokens/month","<strong>Unlimited Members</strong>","Advanced Analytics","Dedicated Support"], isMostPopular: false, buttonText: "Choose Intermediate" },
+    { name: "Pro", price: "$99", description: "For large organizations with extensive needs.", features: ["100 GB Storage","2,000,000 AI Tokens/month","<strong>Unlimited Members</strong>","API Access","$1/GB for extra storage"], isMostPopular: false, buttonText: "Contact Us" }
   ];
 
   const faqs = [
-    {
-      question: "Is my data secure?",
-      answer: "Absolutely. We use enterprise-grade security protocols. Your data is encrypted, private, and is never used for training third-party models. You have full control over your knowledge base."
-    },
-    {
-      question: "What kind of documents can I upload?",
-      answer: "You can upload a wide range of file types, including PDF, DOCX, TXT, MD, and CSV. Our AI automatically extracts the text content to make it fully searchable."
-    },
-    {
-      question: "How does the AI search work?",
-      answer: "Instead of just matching keywords, our AI understands the meaning and context of your questions. This allows you to find documents based on concepts, even if you don't remember the exact phrasing, title, or author."
-    },
-    {
-      question: "Can I collaborate with my team?",
-      answer: "Yes! Collaboration is a core feature. You can create projects to group documents, and manage team member access to ensure the right people have access to the right information."
-    },
-    {
-      question: "What happens if I go over my monthly token limit?",
-      answer: "On our paid plans, we offer options to purchase additional token packs or upgrade to a higher tier. For the Pro plan, we can create custom enterprise solutions. Please contact us for more details."
-    },
-    {
-      question: "Can I cancel my plan at any time?",
-      answer: "Yes, you can cancel your subscription at any time. There are no long-term contracts, and you'll retain access to your plan's features until the end of the current billing period."
-    }
+    { question: "Is my data secure?", answer: "Absolutely. We use enterprise-grade security protocols. Your data is encrypted, private, and is never used for training third-party models. You have full control over your knowledge base." },
+    { question: "What kind of documents can I upload?", answer: "You can upload a wide range of file types, including PDF, DOCX, TXT, MD, and CSV. Our AI automatically extracts the text content to make it fully searchable." },
+    { question: "How does the AI search work?", answer: "Instead of just matching keywords, our AI understands the meaning and context of your questions. This allows you to find documents based on concepts, even if you don't remember the exact phrasing, title, or author." },
+    { question: "Can I collaborate with my team?", answer: "Yes! Collaboration is a core feature. You can create projects to group documents, and manage team member access to ensure the right people have access to the right information." },
+    { question: "What happens if I go over my monthly token limit?", answer: "On our paid plans, we offer options to purchase additional token packs or upgrade to a higher tier. For the Pro plan, we can create custom enterprise solutions. Please contact us for more details." },
+    { question: "Can I cancel my plan at any time?", answer: "Yes, you can cancel your subscription at any time. There are no long-term contracts, and you'll retain access to your plan's features until the end of the current billing period." }
   ];
 
- const handleLogin = () => {
-  setShowAuthOptions(true);
-};
+  // ✅ When clicked, go to the clean /auth page
+  const handleLogin = () => {
+    navigate("/auth");
+  };
 
   const scrollToSection = (id) => {
     const section = document.getElementById(id);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
   };
 
-   async function loginWithGoogle() {
-  await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: { redirectTo: `${window.location.origin}/auth/callback` }
-  });
-}
-
-async function loginWithMicrosoft() {
-  await supabase.auth.signInWithOAuth({
-    provider: "azure", // Microsoft via Azure/Entra
-    options: { redirectTo: `${window.location.origin}/auth/callback` }
-  });
-}
   if (isLoading) {
-    // Show loading state while checking authentication
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
@@ -304,7 +159,9 @@ async function loginWithMicrosoft() {
                       Dashboard
                     </button>
                   </Link>
-                  <span className="text-sm text-gray-600 hidden md:inline-block">Welcome, {user.username || user.full_name?.split(' ')[0] || 'User'}</span>
+                  <span className="text-sm text-gray-600 hidden md:inline-block">
+                    Welcome, {user.user_metadata?.name || user.email || 'User'}
+                  </span>
                 </>
               ) : (
                 <button 
@@ -322,7 +179,7 @@ async function loginWithMicrosoft() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        {/* Dynamic Animated Background */}
+        {/* Animated Background */}
         <div className="absolute inset-0">
           <motion.div
             className="absolute inset-0"
@@ -335,11 +192,7 @@ async function loginWithMicrosoft() {
                 "linear-gradient(135deg, #fff7ed 0%, #ffedd5 50%, #fed7aa 100%)",
               ]
             }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
             className="absolute inset-0 opacity-20"
@@ -352,11 +205,7 @@ async function loginWithMicrosoft() {
                 "radial-gradient(circle at 20% 50%, #fb923c 0%, transparent 40%)"
               ]
             }}
-            transition={{
-              duration: 25,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
+            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
           />
         </div>
 
@@ -370,15 +219,8 @@ async function loginWithMicrosoft() {
             <div className="flex items-center justify-center gap-3 mb-6">
               <motion.div
                 className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-400 rounded-2xl flex items-center justify-center shadow-lg"
-                animate={{
-                  scale: [1, 1.05, 1],
-                  rotate: [0, 5, -5, 0]
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
+                animate={{ scale: [1, 1.05, 1], rotate: [0, 5, -5, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
                 <Beaker className="w-9 h-9 text-white" />
               </motion.div>
@@ -393,13 +235,10 @@ async function loginWithMicrosoft() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <button
                   className="bg-orange-600 hover:bg-orange-700 text-white font-semibold text-lg px-8 py-4 rounded-md transition-colors shadow-sm"
-                  onClick={handleLogin}
+                  onClick={handleLogin}                              // ✅ goes to /auth
                   style={{ fontFamily: 'system-ui, sans-serif' }}
                 >
                   Get Started Free
@@ -408,34 +247,9 @@ async function loginWithMicrosoft() {
               </motion.div>
             </div>
 
-            {showAuthOptions && (
-  <div className="mx-auto mb-16 max-w-md w-full bg-white/90 backdrop-blur border border-orange-200 rounded-xl p-6 shadow-xl">
-    <h3 className="text-xl font-semibold mb-3 text-gray-800">Continue with</h3>
-    <div className="space-y-3">
-      <Button
-        onClick={loginWithGoogle}
-        className="w-full bg-gray-900 hover:bg-black"
-      >
-        Continue with Google
-      </Button>
-      <Button
-        onClick={loginWithMicrosoft}
-        className="w-full bg-gray-800 hover:bg-gray-900"
-      >
-        Continue with Microsoft
-      </Button>
-    </div>
-    <button
-      onClick={() => setShowAuthOptions(false)}
-      className="mt-4 text-sm text-gray-500 hover:text-gray-700 underline"
-    >
-      Cancel
-    </button>
-  </div>
-)}
-
-
-            {/* Use Cases */}
+            {/* (Popup removed) */}
+            {/* Users now go to /auth to choose Google or Microsoft */}
+            {/* ...rest unchanged ... */}
             <div className="grid md:grid-cols-3 gap-8 mt-20">
               {useCases.map((useCase, index) => (
                 <motion.div
@@ -459,10 +273,7 @@ async function loginWithMicrosoft() {
       {/* Features Section */}
       <section id="features" className="py-20 lg:py-32 bg-gradient-to-br from-orange-25 to-orange-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div
-            {...fadeInUp}
-            className="text-center mb-16"
-          >
+          <motion.div {...fadeInUp} className="text-center mb-16">
             <h2 className="text-3xl lg:text-5xl font-bold text-gray-800 mb-6">
               Everything You Need for Research Success
             </h2>
@@ -472,13 +283,7 @@ async function loginWithMicrosoft() {
             </p>
           </motion.div>
 
-          <motion.div
-            variants={staggerChildren}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
+          <motion.div variants={staggerChildren} initial="initial" whileInView="animate" viewport={{ once: true }} className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
               <motion.div key={index} variants={fadeInUp} whileHover={{ y: -10 }}>
                 <Card className="h-full bg-white border-orange-100 hover:shadow-xl transition-all duration-300 hover:border-orange-200">
@@ -499,47 +304,25 @@ async function loginWithMicrosoft() {
       {/* How It Works Section */}
       <section id="how-it-works" className="py-20 lg:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div
-            {...fadeInUp}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl lg:text-5xl font-bold text-gray-800 mb-6">
-              How It Works
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Get up and running in minutes. Our AI handles the complex work so you can focus on research.
-            </p>
+          <motion.div {...fadeInUp} className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-bold text-gray-800 mb-6">How It Works</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">Get up and running in minutes. Our AI handles the complex work so you can focus on research.</p>
           </motion.div>
 
-          <motion.div
-            variants={staggerChildren}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className="grid lg:grid-cols-3 gap-12"
-          >
+          <motion.div variants={staggerChildren} initial="initial" whileInView="animate" viewport={{ once: true }} className="grid lg:grid-cols-3 gap-12">
             {howItWorks.map((step, index) => (
-              <motion.div
-                key={index}
-                variants={fadeInUp}
-                className="text-center relative"
-                whileHover={{ scale: 1.05 }}
-              >
+              <motion.div key={index} variants={fadeInUp} className="text-center relative" whileHover={{ scale: 1.05 }}>
                 {index < howItWorks.length - 1 && (
                   <div className="hidden lg:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-orange-300 to-orange-200 opacity-50 transform -translate-x-1/2" />
                 )}
-
                 <div className="relative">
                   <div className="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-orange-500 to-orange-400 rounded-full flex items-center justify-center shadow-2xl">
                     <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center">
                       <step.icon className="w-10 h-10 text-orange-600" />
                     </div>
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg">
-                    {step.step}
-                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg">{step.step}</div>
                 </div>
-
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">{step.title}</h3>
                 <p className="text-gray-600 leading-relaxed max-w-sm mx-auto">{step.description}</p>
               </motion.div>
@@ -552,27 +335,14 @@ async function loginWithMicrosoft() {
       <section id="pricing" className="py-20 lg:py-32 bg-gradient-to-br from-orange-25 to-orange-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <motion.div {...fadeInUp} className="text-center mb-16">
-            <h2 className="text-3xl lg:text-5xl font-bold text-gray-800 mb-6">
-              Pricing Plans for Every Lab
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Choose the plan that fits your team's needs. All plans come with our core AI features and no limits on members.
-            </p>
+            <h2 className="text-3xl lg:text-5xl font-bold text-gray-800 mb-6">Pricing Plans for Every Lab</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">Choose the plan that fits your team's needs. All plans come with our core AI features and no limits on members.</p>
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {pricingPlans.map((plan, index) => (
-              <motion.div
-                key={index}
-                variants={fadeInUp}
-                initial="initial"
-                whileInView="animate"
-                viewport={{ once: true, amount: 0.3 }}
-                whileHover={{ y: -10 }}
-              >
+              <motion.div key={index} variants={fadeInUp} initial="initial" whileInView="animate" viewport={{ once: true, amount: 0.3 }} whileHover={{ y: -10 }}>
                 <Card className={`h-full flex flex-col ${plan.isMostPopular ? 'border-2 border-orange-500 shadow-2xl' : 'border-gray-200 shadow-lg'} bg-white`}>
-                  {plan.isMostPopular && (
-                    <div className="bg-orange-500 text-white text-xs font-bold uppercase tracking-wider text-center py-1 rounded-t-lg">Most Popular</div>
-                  )}
+                  {plan.isMostPopular && (<div className="bg-orange-500 text-white text-xs font-bold uppercase tracking-wider text-center py-1 rounded-t-lg">Most Popular</div>)}
                   <CardContent className="p-8 flex flex-col flex-grow">
                     <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
                     <p className="text-4xl font-bold mb-4">{plan.price}<span className="text-sm font-normal text-gray-500">/month</span></p>
@@ -600,12 +370,8 @@ async function loginWithMicrosoft() {
       <section id="faq" className="py-20 lg:py-32 bg-white">
         <div className="max-w-4xl mx-auto px-6 lg:px-8">
           <motion.div {...fadeInUp} className="text-center mb-16">
-            <h2 className="text-3xl lg:text-5xl font-bold text-gray-800 mb-6">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-xl text-gray-600">
-              Have questions? We've got answers.
-            </p>
+            <h2 className="text-3xl lg:text-5xl font-bold text-gray-800 mb-6">Frequently Asked Questions</h2>
+            <p className="text-xl text-gray-600">Have questions? We've got answers.</p>
           </motion.div>
           <motion.div initial="initial" whileInView="animate" viewport={{ once: true }} variants={staggerChildren}>
             <Accordion type="single" collapsible className="w-full">
@@ -613,9 +379,7 @@ async function loginWithMicrosoft() {
                 <motion.div key={index} variants={fadeInUp}>
                   <AccordionItem value={`item-${index}`} className="border-b">
                     <AccordionTrigger className="text-left text-lg font-medium hover:no-underline">{faq.question}</AccordionTrigger>
-                    <AccordionContent className="text-base text-gray-600 leading-relaxed pt-2">
-                      {faq.answer}
-                    </AccordionContent>
+                    <AccordionContent className="text-base text-gray-600 leading-relaxed pt-2">{faq.answer}</AccordionContent>
                   </AccordionItem>
                 </motion.div>
               ))}
@@ -628,9 +392,7 @@ async function loginWithMicrosoft() {
       <section className="py-20 lg:py-32 bg-gradient-to-br from-orange-600 via-orange-500 to-orange-400">
         <div className="max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <motion.div {...fadeInUp}>
-            <h2 className="text-3xl lg:text-5xl font-bold text-white mb-6">
-              Ready to Transform Your Research Workflow?
-            </h2>
+            <h2 className="text-3xl lg:text-5xl font-bold text-white mb-6">Ready to Transform Your Research Workflow?</h2>
             <p className="text-xl text-orange-100 mb-12 leading-relaxed">
               Join leading research teams who never lose important knowledge again.
               Start your free trial today.
@@ -641,7 +403,7 @@ async function loginWithMicrosoft() {
                 <Button
                   size="lg"
                   className="bg-white text-orange-600 hover:bg-orange-50 text-lg px-8 py-4 h-auto font-semibold shadow-lg"
-                  onClick={handleLogin}
+                  onClick={handleLogin}                                 // ✅ goes to /auth
                 >
                   Get Started Free
                   <ArrowRight className="ml-2 w-5 h-5" />
