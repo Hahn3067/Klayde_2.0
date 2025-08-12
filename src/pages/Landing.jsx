@@ -368,7 +368,7 @@ export default function Landing() {
                         </li>
                       ))}
                     </ul>
-                   <button 
+                   <button>
   onClick={handleLogin} 
   className={`w-full mt-auto py-3 px-4 font-medium rounded-md transition-colors ${plan.isMostPopular ? 'bg-orange-600 hover:bg-orange-700 text-white' : 'bg-gray-800 hover:bg-gray-900 text-white'}`}
   style={{ 
