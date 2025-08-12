@@ -1,3 +1,5 @@
+import { supabase } from "@/lib/supabaseClient";
+import { useNavigate } from "react-router-dom";
 
 import React, { useState, useEffect } from "react";
 import { Document } from "@/api/entities";
