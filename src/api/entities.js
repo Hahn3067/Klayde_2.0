@@ -1,17 +1,15 @@
-import { base44 } from './base44Client';
+// src/api/entities.js
+// Dummy Entities replacing Base44
 
+export const Document = {};
+export const LabInfo = {};
+export const Category = {};
+export const Project = {};
+export const UsageLog = {};
 
-export const Document = base44.entities.Document;
-
-export const LabInfo = base44.entities.LabInfo;
-
-export const Category = base44.entities.Category;
-
-export const Project = base44.entities.Project;
-
-export const UsageLog = base44.entities.UsageLog;
-
-
-
-// auth sdk:
-export const User = base44.auth;
+// Dummy User auth object
+export const User = {
+  isAuthenticated: false,
+  login: () => console.warn("Login not available - Base44 disabled"),
+  logout: () => console.warn("Logout not available - Base44 disabled"),
+};
