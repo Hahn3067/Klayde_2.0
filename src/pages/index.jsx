@@ -73,8 +73,8 @@ function PagesContent() {
         <Route path="/Landing" element={<Landing />} />
         <Route path="/Pricing" element={<Pricing />} />
         <Route path="/auth/callback" element={<OAuthCallback />} />
-
-       <Route path="*" element={<DebugNoMatch />} />
+        <Route path="/login" element={<AuthPage />} />
+        <Route path="*" element={<DebugNoMatch />} />
 
 
 
