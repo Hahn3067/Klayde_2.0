@@ -28,7 +28,7 @@ const PAGES = {
   Pricing: Pricing,
 };
 
-ffunction _getCurrentPage(url) {
+function _getCurrentPage(url) {
   if (url.endsWith("/")) {
     url = url.slice(0, -1);
   }
