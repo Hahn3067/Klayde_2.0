@@ -23,9 +23,9 @@ import {
   Menu
 } from "lucide-react";
 import { motion } from "framer-motion";
-
+import { User } from '@/entities/User';
 import { createPageUrl } from '@/utils';
-import { Link } from "react-router-dom"; // Added for Link component
+import { Link } from "react-router-dom";
 import {
   Accordion,
   AccordionContent,
@@ -273,16 +273,23 @@ export default function Landing() {
               {user ? (
                 <>
                   <Link to={createPageUrl("Dashboard")}>
-                    <Button variant="outline" size="sm" className="text-base px-4 py-2">
+                    <button 
+                      className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-800 font-medium text-base px-4 py-2 rounded-md transition-colors"
+                      style={{ fontFamily: 'system-ui, sans-serif' }}
+                    >
                       Dashboard
-                    </Button>
+                    </button>
                   </Link>
                   <span className="text-sm text-gray-600 hidden md:inline-block">Welcome, {user.username || user.full_name?.split(' ')[0] || 'User'}</span>
                 </>
               ) : (
-                <Button onClick={handleLogin} size="sm" className="bg-orange-600 hover:bg-orange-700 text-base px-6 py-2">
+                <button 
+                  onClick={handleLogin} 
+                  className="bg-orange-600 hover:bg-orange-700 text-white font-medium text-base px-6 py-2 rounded-md transition-colors"
+                  style={{ fontFamily: 'system-ui, sans-serif' }}
+                >
                   Sign In
-                </Button>
+                </button>
               )}
             </div>
           </div>
@@ -366,14 +373,14 @@ export default function Landing() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-lg px-8 py-4 h-auto shadow-lg"
+                <button
+                  className="bg-orange-600 hover:bg-orange-700 text-white font-semibold text-lg px-8 py-4 rounded-md transition-colors shadow-sm"
                   onClick={handleLogin}
+                  style={{ fontFamily: 'system-ui, sans-serif' }}
                 >
                   Get Started Free
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
+                  <ArrowRight className="ml-2 w-5 h-5 inline" />
+                </button>
               </motion.div>
             </div>
 
