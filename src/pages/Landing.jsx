@@ -368,7 +368,18 @@ export default function Landing() {
                         </li>
                       ))}
                     </ul>
-                    <Button onClick={handleLogin} className={`w-full mt-auto ${plan.isMostPopular ? 'bg-orange-600 hover:bg-orange-700' : 'bg-gray-800 hover:bg-gray-900'}`}>
+                   <button 
+  onClick={handleLogin} 
+  className={`w-full mt-auto py-3 px-4 font-medium rounded-md transition-colors ${plan.isMostPopular ? 'bg-orange-600 hover:bg-orange-700 text-white' : 'bg-gray-800 hover:bg-gray-900 text-white'}`}
+  style={{ 
+    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    textRendering: 'optimizeLegibility',
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale',
+    border: 'none',
+    cursor: 'pointer'
+  }}
+                     >
                       {plan.buttonText}
                     </Button>
                   </CardContent>
