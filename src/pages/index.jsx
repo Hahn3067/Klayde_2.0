@@ -74,7 +74,7 @@ function PagesContent() {
         <Route path="/Pricing" element={<Pricing />} />
         <Route path="/auth/callback" element={<OAuthCallback />} />
         <Route path="/login" element={<AuthPage />} />
-        <Route path="*" element={<DebugNoMatch />} />
+<Route path="*" element={<div style={{ padding: 24 }}>⚠️ No route matched this URL.</div>} />
 
 
 
