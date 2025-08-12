@@ -24,7 +24,6 @@ import {
   Menu
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { User } from '@/entities/User';
 import { createPageUrl } from '@/utils';
 import { Link } from "react-router-dom";
 import {
@@ -43,18 +42,27 @@ export default function Landing() {
 
 
   useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const userData = await User.me();
-        setUser(userData);
-      } catch (error) {
-        // User not logged in, which is fine for a landing page
-        setUser(null);
-      }
-      setIsLoading(false);
-    };
-    checkUser();
-  }, []);
+  let mounted = true;
+
+  (async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!mounted) return;
+    setUser(session?.user ?? null);
+    setIsLoading(false);
+  })();
+
+  // stay in sync with login/logout events
+  const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+    if (!mounted) return;
+    setUser(session?.user ?? null);
+  });
+
+  return () => {
+    mounted = false;
+    sub.subscription?.unsubscribe?.();
+  };
+}, []);
+
 
   const fadeInUp = {
     initial: { opacity: 0, y: 30 },
