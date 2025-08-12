@@ -1,7 +1,13 @@
-// Dummy Base44 client - does nothing
+// src/api/base44Client.js
+// Dummy Base44 client so imports still work without @base44/sdk
+
 export const base44 = {
-  request: async () => {
-    console.warn("Base44 is disabled. Returning dummy data.");
-    return null;
+  entities: {},
+  functions: {},
+  integrations: {},
+  auth: {
+    isAuthenticated: false,
+    login: () => console.warn("Base44 login disabled"),
+    logout: () => console.warn("Base44 logout disabled"),
   }
 };
