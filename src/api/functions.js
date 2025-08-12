@@ -1,17 +1,37 @@
-import { base44 } from './base44Client';
+// src/api/functions.js
+// Dummy functions replacing Base44 SDK calls
 
+export async function processDocument(doc) {
+  console.warn("Base44 disabled - processDocument skipped", doc);
+  return null;
+}
 
-export const processDocument = base44.functions.processDocument;
+export async function aiSearch(query) {
+  console.warn("Base44 disabled - aiSearch skipped", query);
+  return [];
+}
 
-export const aiSearch = base44.functions.aiSearch;
+export async function deleteDocumentData(id) {
+  console.warn("Base44 disabled - deleteDocumentData skipped", id);
+  return true;
+}
 
-export const deleteDocumentData = base44.functions.deleteDocumentData;
+export async function aiChat(message) {
+  console.warn("Base44 disabled - aiChat skipped", message);
+  return { reply: "" };
+}
 
-export const aiChat = base44.functions.aiChat;
+export async function deleteAllCompanyData() {
+  console.warn("Base44 disabled - deleteAllCompanyData skipped");
+  return true;
+}
 
-export const deleteAllCompanyData = base44.functions.deleteAllCompanyData;
+export async function setupDatabase() {
+  console.warn("Base44 disabled - setupDatabase skipped");
+  return true;
+}
 
-export const setupDatabase = base44.functions.setupDatabase;
-
-export const syncFileSizes = base44.functions.syncFileSizes;
-
+export async function syncFileSizes() {
+  console.warn("Base44 disabled - syncFileSizes skipped");
+  return true;
+}
