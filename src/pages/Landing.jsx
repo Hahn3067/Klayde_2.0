@@ -164,10 +164,10 @@ export default function Landing() {
                   </span>
                 </>
               ) : (
-                <button 
-                  onClick={handleLogin} 
-                  className="bg-orange-600 hover:bg-orange-700 text-white font-medium text-base px-6 py-2 rounded-md transition-colors"
-                  style={{ fontFamily: 'system-ui, sans-serif' }}
+                <button
+  onClick={handleLogin}
+  className="bg-orange-600 hover:bg-orange-700 text-white font-medium text-base px-6 py-2 rounded-md transition-colors"
+  style={{ fontFamily: 'system-ui, sans-serif' }} // Added this specific font stack
                 >
                   Sign In
                 </button>
