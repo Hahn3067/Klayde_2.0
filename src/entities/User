@@ -1,7 +1,34 @@
+// src/entities/User.js
+
+let mockUser = null; // null means no user logged in initially
+
 export const User = {
-  me: async () => null,  // no user logged in
-  loginWithRedirect: async (url) => {
-    // mock login redirect
-    window.location.href = url;
+  // Simulate fetching current logged-in user
+  async me() {
+    // Simulate network delay
+    await new Promise((r) => setTimeout(r, 300));
+    return mockUser;
+  },
+
+  // Simulate login flow
+  async loginWithRedirect(callbackUrl) {
+    console.log("Mock login triggered, redirect to:", callbackUrl);
+    // Here, we just mock login by setting a dummy user
+    mockUser = {
+      id: "123",
+      username: "mockuser",
+      full_name: "Mock User",
+      email: "mockuser@example.com",
+    };
+
+    // Simulate redirect by just changing window.location (or you can skip)
+    window.location.href = callbackUrl || "/";
+  },
+
+  // Simulate logout
+  async logout() {
+    mockUser = null;
+    // Redirect to homepage after logout
+    window.location.href = "/";
   }
 };
