@@ -23,7 +23,7 @@ import {
   Menu
 } from "lucide-react";
 import { motion } from "framer-motion";
-
+import { User } from '@/entities/User';
 import { createPageUrl } from '@/utils';
 import { Link } from "react-router-dom"; // Added for Link component
 import {
