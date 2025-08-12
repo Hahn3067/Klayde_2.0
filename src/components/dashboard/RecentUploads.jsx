@@ -100,9 +100,24 @@ export default function RecentUploads({ documents, isLoading }) {
             <FileText className="w-8 h-8 mx-auto mb-3 text-gray-300" />
             <p className="text-sm">No documents uploaded yet</p>
             <Link to={createPageUrl("Upload")}>
-              <Button className="mt-3 bg-orange-600 hover:bg-orange-700 text-sm">
+              <button
+                className="mt-3 px-4 py-2 text-sm rounded-md transition-colors"
+                style={{ 
+                  fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  backgroundColor: '#ea580c',
+                  color: 'white',
+                  fontWeight: '500',
+                  textRendering: 'optimizeLegibility',
+                  WebkitFontSmoothing: 'antialiased',
+                  MozOsxFontSmoothing: 'grayscale',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#c2410c'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#ea580c'}
+              >
                 Upload First Document
-              </Button>
+              </button>
             </Link>
           </div>
         )}
