@@ -227,8 +227,14 @@ useEffect(() => {
           className="mb-8"
         >
             <div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 tracking-tight">
-                Welcome back{user ? `, ${user.username || user.full_name?.split(' ')[0]}` : ''}
+    <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 tracking-tight">
+      Welcome back{user ? `, ${user.user_metadata?.name || user.email?.split('@')[0]}` : ''}
+    </h2>
+
+    <div className="mt-2 text-xs text-gray-500">
+      Org: <code>{orgId || "…"}</code> • Role: <code>{role || "…"}</code>
+    </div>
+
               </h2>
               <p className="text-gray-600 mt-2 text-lg">
                 Here's a quick overview of your lab's activity.
