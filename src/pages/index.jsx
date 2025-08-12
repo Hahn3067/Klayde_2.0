@@ -66,10 +66,7 @@ function PagesContent() {
         <Route path="/AIChat" element={<AIChat />} />
 
         {/* TEMP: catch-all so we never get a blank screen */}
-        <Route
-          path="*"
-          element={<div style={{ padding: 24 }}>⚠️ No route matched this URL.</div>}
-        />
+       
       </Routes>
     </Layout>
   );
