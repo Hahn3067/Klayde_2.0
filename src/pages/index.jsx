@@ -1,9 +1,5 @@
-import DebugNoMatch from "./DebugNoMatch";
-
 import AuthPage from "./AuthPage";
-
 import OAuthCallback from "./OAuthCallback";
-
 import Layout from "./Layout.jsx";
 
 import Dashboard from "./Dashboard";
@@ -19,38 +15,30 @@ import Pricing from "./Pricing";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 
 const PAGES = {
-  Dashboard: Dashboard,
-  Search: Search,
-  Upload: Upload,
-  Projects: Projects,
-  Knowledgebase: Knowledgebase,
-  TeamManagement: TeamManagement,
-  AIChat: AIChat,
-  Landing: Landing,
-  Pricing: Pricing,
+  Dashboard,
+  Search,
+  Upload,
+  Projects,
+  Knowledgebase,
+  TeamManagement,
+  AIChat,
+  Landing,
+  Pricing,
 };
 
 function _getCurrentPage(url) {
-  if (url.endsWith("/")) {
-    url = url.slice(0, -1);
-  }
-  let urlLastPart = url.split("/").pop();
+  if (url.endsWith("/")) url = url.slice(0, -1);
+  let urlLastPart = url.split("/").pop() || "";
+  if (urlLastPart.includes("?")) urlLastPart = urlLastPart.split("?")[0];
 
-  // Handle the root path explicitly
-  if (urlLastPart === "") {
-    return "Landing"; // This is correct, as / maps to Landing
-  }
-
-  if (urlLastPart.includes("?")) {
-    urlLastPart = urlLastPart.split("?")[0];
-  }
+  if (urlLastPart === "") return "Landing";
 
   const pageName = Object.keys(PAGES).find(
     (page) => page.toLowerCase() === urlLastPart.toLowerCase()
   );
-  // Default to 'Dashboard' if no match found (or whatever your desired default is)
-  return pageName || "Dashboard"; 
+  return pageName || "Dashboard";
 }
+
 function PagesContent() {
   const location = useLocation();
   const currentPage = _getCurrentPage(location.pathname);
@@ -58,26 +46,30 @@ function PagesContent() {
   return (
     <Layout currentPageName={currentPage}>
       <Routes>
-        {/* Landing is now the default page */}
+        {/* Public routes */}
         <Route path="/" element={<Landing />} />
-<Route path="/auth" element={<AuthPage />} />
+        <Route path="/Landing" element={<Landing />} />
+        <Route path="/Pricing" element={<Pricing />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/login" element={<AuthPage />} /> {/* alias for buttons that point to /login */}
+        <Route path="/auth/callback" element={<OAuthCallback />} />
 
+        {/* Dashboard & app routes (support both cases just in case) */}
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/dashboard" element={<Dashboard />} />
+
         <Route path="/Search" element={<Search />} />
         <Route path="/Upload" element={<Upload />} />
         <Route path="/Projects" element={<Projects />} />
         <Route path="/Knowledgebase" element={<Knowledgebase />} />
         <Route path="/TeamManagement" element={<TeamManagement />} />
         <Route path="/AIChat" element={<AIChat />} />
-        <Route path="/Landing" element={<Landing />} />
-        <Route path="/Pricing" element={<Pricing />} />
-        <Route path="/auth/callback" element={<OAuthCallback />} />
-        <Route path="/login" element={<AuthPage />} />
-<Route path="*" element={<div style={{ padding: 24 }}>⚠️ No route matched this URL.</div>} />
 
-
-
+        {/* TEMP: catch-all so we never get a blank screen */}
+        <Route
+          path="*"
+          element={<div style={{ padding: 24 }}>⚠️ No route matched this URL.</div>}
+        />
       </Routes>
     </Layout>
   );
