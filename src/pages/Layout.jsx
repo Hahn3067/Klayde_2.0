@@ -1,5 +1,4 @@
 
-
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -50,8 +49,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 // Correctly import the User entity
-import { User } from '@/api/entities';
-import { deleteAllCompanyData } from '@/api/functions';
+import { User } from '@/entities/User';
+import { deleteAllCompanyData } from '@/functions/deleteAllCompanyData';
 
 
 const navigationItems = [
@@ -310,4 +309,3 @@ export default function Layout({ children, currentPageName }) {
     </SidebarProvider>
   );
 }
-
