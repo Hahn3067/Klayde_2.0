@@ -1,23 +1,22 @@
-
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
-  FileSearch,
   Upload,
   LayoutDashboard,
   BookOpen,
-  Beaker,
-  Search,
-  User as UserIcon, // Renamed to avoid conflict with API User
+  Search as SearchIcon,
   Users,
   FolderKanban,
-  BrainCircuit, // Added for AI Chat icon
+  BrainCircuit,
+  Beaker,
   LogOut,
   Trash2,
   AlertTriangle,
-  Loader2
+  Loader2,
+  User as UserIcon
 } from "lucide-react";
+
 import {
   Sidebar,
   SidebarContent,
@@ -32,6 +31,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,6 +39,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import {
   Dialog,
   DialogContent,
@@ -47,77 +48,71 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
+
 import { Button } from '@/components/ui/button';
-// Correctly import the User entity
 import { User } from '@/entities/User';
 import { deleteAllCompanyData } from '@/functions/deleteAllCompanyData';
 
-
 const navigationItems = [
-  {
-    title: "Dashboard",
-    url: createPageUrl("Dashboard"),
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Projects",
-    url: createPageUrl("Projects"),
-    icon: FolderKanban,
-  },
-  {
-    title: "Knowledgebase",
-    url: createPageUrl("Knowledgebase"),
-    icon: BookOpen,
-  },
-  {
-    title: "AI Search",
-    url: createPageUrl("Search"),
-    icon: Search,
-  },
-  {
-    title: "AI Chat",
-    url: createPageUrl("AIChat"),
-    icon: BrainCircuit,
-  },
-  {
-    title: "Team Management",
-    url: createPageUrl("TeamManagement"),
-    icon: Users,
-  },
+  { title: "Dashboard",       url: createPageUrl("Dashboard"),       icon: LayoutDashboard },
+  { title: "Projects",        url: createPageUrl("Projects"),        icon: FolderKanban },
+  { title: "Knowledgebase",   url: createPageUrl("Knowledgebase"),   icon: BookOpen },
+  { title: "AI Search",       url: createPageUrl("Search"),          icon: SearchIcon },
+  { title: "AI Chat",         url: createPageUrl("AIChat"),          icon: BrainCircuit },
+  { title: "Team Management", url: createPageUrl("TeamManagement"),  icon: Users },
 ];
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
-
-  // More robust check: Hide sidebar for Landing page regardless of currentPageName
-  const isLandingPage = currentPageName === 'Landing' ||
-                       location.pathname === '/' ||
-                       location.pathname === '/Landing';
-
-  if (isLandingPage) {
-    return <>{children}</>;
-  }
-  const [user, setUser] = React.useState(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
-  const [isDeleting, setIsDeleting] = React.useState(false);
   const navigate = useNavigate();
 
+  // 1) Treat Landing, /login, and any /auth/* page as "no sidebar" pages.
+  const isLandingPage =
+    currentPageName === "Landing" ||
+    location.pathname === "/" ||
+    location.pathname.toLowerCase() === "/landing";
+
+  const isAuthPage =
+    location.pathname.toLowerCase() === "/login" ||
+    location.pathname.toLowerCase().startsWith("/auth");
+
+  const hideSidebar = isLandingPage || isAuthPage;
+
+  // 2) Track user and a loading flag so we don't render the shell too early.
+  const [user, setUser] = React.useState(null);
+  const [authLoading, setAuthLoading] = React.useState(true);
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+  const [isDeleting, setIsDeleting] = React.useState(false);
+
   React.useEffect(() => {
-    const loadUser = async () => {
+    let alive = true;
+    (async () => {
       try {
-        const userData = await User.me(); // This will now work correctly
-        setUser(userData);
-      } catch (error) {
-        console.error("Error loading user:", error);
-        // Not logged in, which is fine for public pages
+        const userData = await User.me(); // your existing API call
+        if (!alive) return;
+        setUser(userData ?? null);
+      } catch (err) {
+        // Not logged in is fine for public pages.
+        if (!alive) return;
+        setUser(null);
+      } finally {
+        if (alive) setAuthLoading(false);
       }
-    };
-    loadUser();
+    })();
+    return () => { alive = false; };
   }, []);
+
+  // 3) If this is a protected area (i.e., not a public/auth page) and there's no user, send to /login.
+  React.useEffect(() => {
+    if (hideSidebar) return;              // public/auth pages don't redirect
+    if (authLoading) return;              // wait until we checked
+    if (!user) navigate("/login", { replace: true });
+  }, [hideSidebar, authLoading, user, navigate]);
 
   const handleLogout = async () => {
     await User.logout();
-    window.location.href = createPageUrl('Landing');
+    window.location.href = createPageUrl("Landing");
   };
 
   const handleDeleteAccount = async () => {
@@ -125,7 +120,7 @@ export default function Layout({ children, currentPageName }) {
     try {
       await deleteAllCompanyData();
       alert("All company data has been deleted successfully.");
-      handleLogout(); // Log out after successful deletion
+      handleLogout();
     } catch (error) {
       console.error("Failed to delete company data:", error);
       alert("Failed to delete company data. Please try again.");
@@ -135,27 +130,38 @@ export default function Layout({ children, currentPageName }) {
     }
   };
 
+  // 4) On Landing/Login/Auth pages: just render the page content (no sidebar).
+  if (hideSidebar) {
+    return <>{children}</>;
+  }
+
+  // 5) While we’re figuring out whether the user is logged in, show a tiny loader.
+  if (authLoading) {
+    return <div className="p-6">Loading…</div>;
+  }
+
+  // 6) If not logged in (and not on an auth page), nothing to show; the effect above will redirect.
+  if (!user) {
+    return null;
+  }
+
+  // 7) Logged in → render the dashboard shell with sidebar.
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-orange-25">
-        <style>
-          {`
-            :root {
-              --primary: 234 88 12; /* orange-600 */
-              --primary-foreground: 255 255 255;
-              --secondary: 254 215 170; /* orange-200 */
-              --secondary-foreground: 154 52 18; /* orange-900 */
-              --accent: 255 237 213; /* orange-100 */
-              --accent-foreground: 154 52 18; /* orange-900 */
-              --muted: 255 247 237; /* orange-50 */
-              --muted-foreground: 120 113 108; /* stone-500 */
-            }
-            
-            .bg-orange-25 {
-              background-color: #fffaf7;
-            }
-          `}
-        </style>
+        <style>{`
+          :root {
+            --primary: 234 88 12; /* orange-600 */
+            --primary-foreground: 255 255 255;
+            --secondary: 254 215 170; /* orange-200 */
+            --secondary-foreground: 154 52 18; /* orange-900 */
+            --accent: 255 237 213; /* orange-100 */
+            --accent-foreground: 154 52 18; /* orange-900 */
+            --muted: 255 247 237; /* orange-50 */
+            --muted-foreground: 120 113 108; /* stone-500 */
+          }
+          .bg-orange-25 { background-color: #fffaf7; }
+        `}</style>
 
         <Sidebar className="border-r border-orange-200 bg-white">
           <SidebarHeader className="border-b border-orange-200 p-6">
@@ -203,7 +209,7 @@ export default function Layout({ children, currentPageName }) {
                 Quick Actions
               </SidebarGroupLabel>
               <SidebarGroupContent>
-                 <SidebarMenuItem>
+                <SidebarMenuItem>
                   <SidebarMenuButton
                     asChild
                     className='text-gray-600 hover:bg-orange-50 hover:text-orange-700 transition-all duration-200 rounded-lg mb-1'
@@ -240,12 +246,12 @@ export default function Layout({ children, currentPageName }) {
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log Out</span>
                 </DropdownMenuItem>
-                
+
                 {user?.role === 'admin' && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem 
-                      onClick={() => setIsDeleteModalOpen(true)} 
+                    <DropdownMenuItem
+                      onClick={() => setIsDeleteModalOpen(true)}
                       className="cursor-pointer text-red-600 focus:bg-red-50 focus:text-red-700"
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
@@ -274,40 +280,39 @@ export default function Layout({ children, currentPageName }) {
 
       <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
         <DialogContent className="sm:max-w-md bg-white">
-            <DialogHeader>
-                <DialogTitle className="text-xl font-bold text-red-600 flex items-center gap-2">
-                    <AlertTriangle className="w-6 h-6"/>
-                    Delete Account & All Data
-                </DialogTitle>
-                <DialogDescription className="pt-2 text-gray-600">
-                    This action is irreversible and cannot be undone. All of the following data will be permanently deleted for all users:
-                    <ul className="list-disc list-inside mt-2 text-sm">
-                        <li>All Documents</li>
-                        <li>All Projects</li>
-                        <li>All Categories</li>
-                        <li>All Usage History</li>
-                        <li>All Lab Information</li>
-                    </ul>
-                    Are you absolutely sure you want to proceed?
-                </DialogDescription>
-            </DialogHeader>
-            <DialogFooter className="mt-4">
-                <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)} disabled={isDeleting}>
-                    Cancel
-                </Button>
-                <Button 
-                    variant="destructive"
-                    onClick={handleDeleteAccount}
-                    disabled={isDeleting}
-                    className="bg-red-600 hover:bg-red-700"
-                >
-                    {isDeleting ? (
-                        <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deleting...</>
-                    ) : (
-                        "Yes, Delete Everything"
-                    )}
-                </Button>
-            </DialogFooter>
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-red-600 flex items-center gap-2">
+              <AlertTriangle className="w-6 h-6"/>
+              Delete Account & All Data
+            </DialogTitle>
+            <DialogDescription className="pt-2 text-gray-600">
+              This action is irreversible and cannot be undone. All of the following data will be permanently deleted for all users:
+              <ul className="list-disc list-inside mt-2 text-sm">
+                <li>All Documents</li>
+                <li>All Projects</li>
+                <li>All Categories</li>
+                <li>All Usage History</li>
+                <li>All Lab Information</li>
+              </ul>
+              Are you absolutely sure you want to proceed?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)} disabled={isDeleting}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteAccount}
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {isDeleting
+                ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deleting...</>)
+                : ("Yes, Delete Everything")
+              }
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </SidebarProvider>
