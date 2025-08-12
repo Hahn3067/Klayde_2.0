@@ -235,7 +235,7 @@ useEffect(() => {
       Org: <code>{orgId || "…"}</code> • Role: <code>{role || "…"}</code>
     </div>
 
-              </h2>
+              
               <p className="text-gray-600 mt-2 text-lg">
                 Here's a quick overview of your lab's activity.
               </p>
